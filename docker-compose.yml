@@ -1,0 +1,17 @@
+version: "3"
+services:
+  go_server:
+    build: ./
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/app
+    links:
+      - mongo_db
+  mongo_db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - './mongo-data:/data/db'
+
