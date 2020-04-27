@@ -1,2 +1,5 @@
 mongo-data
 main
+vendor
+icat
+.env
