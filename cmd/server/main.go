@@ -13,7 +13,8 @@ var serverPort = 8080
 func main() {
 	router := mux.NewRouter()
 
-	bloodpressure.RegisterHandlers(router)
+	// blood pressure routes
+	bloodpressure.RegisterHandlers(router, bloodpressure.InitService(bloodpressure.InitRepository("testdbcontext")))
 
 	fmt.Println("Server listening!")
 	http.ListenAndServe(":8080", router)
