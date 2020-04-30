@@ -1,5 +1,5 @@
 package entity
 
 type BloodPressure struct {
-	Title string `json:"title"`
+	Foo string `json:"foo"`
 }
