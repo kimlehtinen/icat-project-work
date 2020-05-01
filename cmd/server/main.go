@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/kim3z/icat-project-work/internal/bloodpressure"
 	"github.com/kim3z/icat-project-work/pkg/dbcontext"
 )
 
-var serverPort = 8080
+var serverPortNumber = 8080
 
 func main() {
 	db, err := dbcontext.NewConnection()
@@ -29,6 +30,6 @@ func main() {
 	bpRouter := apiRouter.PathPrefix("/blood-pressure").Subrouter()
 	bloodpressure.RegisterHandlers(bpRouter, bloodpressure.InitService(bloodpressure.InitRepository(db)))
 
-	fmt.Println("Server listening!")
-	http.ListenAndServe(":8080", router)
+	port := fmt.Sprintf(":%s", strconv.Itoa(serverPortNumber))
+	http.ListenAndServe(port, router)
 }
