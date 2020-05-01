@@ -32,6 +32,7 @@ func InitRepository(db *mongo.Database) Repository {
 	return repository{db}
 }
 
+// Find returns a bp result by id
 func (r repository) Find(id string) (entity.BloodPressure, error) {
 	var bpDB entity.BloodPressure
 	objectIDS, _ := primitive.ObjectIDFromHex(id)
@@ -48,6 +49,7 @@ func (r repository) Find(id string) (entity.BloodPressure, error) {
 	return bpDB, err
 }
 
+// All returns all bp results
 func (r repository) All() ([]entity.BloodPressure, error) {
 	collection := r.db.Collection(collectionName)
 	results := []entity.BloodPressure{}
@@ -70,6 +72,7 @@ func (r repository) All() ([]entity.BloodPressure, error) {
 	return results, nil
 }
 
+// Create creates a new bp result
 func (r repository) Create(bp entity.BloodPressure) (*mongo.InsertOneResult, error) {
 	collection := r.db.Collection(collectionName)
 	insertResult, err := collection.InsertOne(context.TODO(), bp)

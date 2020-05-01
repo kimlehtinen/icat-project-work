@@ -46,7 +46,7 @@ func (s service) All() ([]entity.BloodPressure, error) {
 	return results, nil
 }
 
-// Create creates a new bp result.
+// Create creates a new bp result
 func (s service) Create(req CreateBloodPressureRequest) (entity.BloodPressure, error) {
 	now := time.Now()
 	insertResult, err := s.repo.Create(entity.BloodPressure{

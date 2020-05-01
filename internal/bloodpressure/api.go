@@ -14,11 +14,13 @@ type resource struct {
 // RegisterHandlers register http handlers for bloodpressure
 func RegisterHandlers(router *mux.Router, service Service) {
 	res := resource{service}
-	router.HandleFunc("/results", res.all).Methods("GET")
-	router.HandleFunc("/result/{id}", res.find).Methods("GET")
-	router.HandleFunc("/result", res.create).Methods("POST")
+
+	router.HandleFunc("/all", res.all).Methods("GET")
+	router.HandleFunc("/find/{id}", res.find).Methods("GET")
+	router.HandleFunc("/create", res.create).Methods("POST")
 }
 
+// GET /api/blood-pressure/all
 func (res resource) all(w http.ResponseWriter, r *http.Request) {
 	results, err := res.service.All()
 
@@ -33,6 +35,7 @@ func (res resource) all(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GET /api/blood-pressure/find/{id}
 func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
@@ -49,6 +52,7 @@ func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// POST /api/blood-pressure/create
 func (res resource) create(w http.ResponseWriter, r *http.Request) {
 	var input CreateBloodPressureRequest
 	_ = json.NewDecoder(r.Body).Decode(&input)
