@@ -23,7 +23,6 @@ func RegisterHandlers(router *mux.Router, service Service) {
 // GET /api/blood-pressure/all
 func (res resource) all(w http.ResponseWriter, r *http.Request) {
 	results, err := res.service.All()
-
 	if err != nil {
 		panic(err)
 	}

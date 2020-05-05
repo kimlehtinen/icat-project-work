@@ -1,13 +1,15 @@
-version: "3"
+version: "3.2"
 services:
   go_server:
     build: 
-      context: .
-      dockerfile: cmd/server/Dockerfile
+      context: ./go-server
+      dockerfile: ./cmd/server/Dockerfile
     ports:
       - '8080:8080'
     volumes:
-      - ./:/app
+      - type: bind
+        source: ./go-server
+        target: /app
     links:
       - mongo_db
   mongo_db:
