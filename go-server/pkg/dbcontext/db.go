@@ -13,7 +13,7 @@ import (
 // NewConnection creates new database connection
 func NewConnection() (*mongo.Database, error) {
 	// Database Config
-	clientOptions := options.Client().ApplyURI("mongodb://mongo_db:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://mongo-db:27017")
 	client, err := mongo.NewClient(clientOptions)
 
 	//Set up a context required by mongo.Connect

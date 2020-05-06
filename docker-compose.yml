@@ -1,9 +1,22 @@
-version: "3.2"
+version: "3.7"
 services:
-  go_server:
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo-data:/data/db'
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+  api:
     build: 
       context: ./go-server
-      dockerfile: ./cmd/server/Dockerfile
+      dockerfile: ./cmd/server/Dockerfile.dev
     ports:
       - '8080:8080'
     volumes:
@@ -11,12 +24,15 @@ services:
         source: ./go-server
         target: /app
     links:
-      - mongo_db
-  mongo_db:
-    image: mongo:latest
+      - mongo-db
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./react-client
     ports:
-      - '27017:27017'
+      - '3000:3000'
     volumes:
-      - 'mongo-data:/data/db'
+      - ./react-client:/app
+      - /app/node_modules
 volumes:
   mongo-data:
