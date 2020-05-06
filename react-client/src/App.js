@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import OtherPage from './OtherPage';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import ResponsiveDrawer from './components/navigation/ResponsiveDrawer'
 
-class App extends Component {
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">ICAT PROJECT WORK</h1>
-            <Link to="/">Home</Link>
-            <Link to="/otherpage">Other Page</Link>
-          </header>
-          <div>
-            <Route path="/otherpage" component={OtherPage} />
-          </div>
-        </div>
-      </Router>
-    );
-  }
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
+
+export default function App() {
+  const classes = useStyles();
+
+  return (
+    <ResponsiveDrawer />
+  );
 }
-
-export default App;
