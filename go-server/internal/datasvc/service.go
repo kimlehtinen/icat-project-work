@@ -1,16 +1,16 @@
-package bloodpressure
+package datasvc
 
 import (
 	"time"
 
-	"github.com/kim3z/icat-project-work/internal/entity"
+	"github.com/kim3z/icat-project-work/pkg/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Service interface {
-	Find(id string) (entity.BloodPressure, error)
-	All() ([]entity.BloodPressure, error)
-	Create(input CreateBloodPressureRequest) (entity.BloodPressure, error)
+	Find(id string) (models.BloodPressure, error)
+	All() ([]models.BloodPressure, error)
+	Create(input CreateBloodPressureRequest) (models.BloodPressure, error)
 }
 
 type CreateBloodPressureRequest struct {
@@ -29,27 +29,27 @@ func InitService(repo Repository) Service {
 }
 
 // Find returns a bp result by id
-func (s service) Find(id string) (entity.BloodPressure, error) {
+func (s service) Find(id string) (models.BloodPressure, error) {
 	bp, err := s.repo.Find(id)
 	if err != nil {
-		return entity.BloodPressure{}, err
+		return models.BloodPressure{}, err
 	}
 	return bp, nil
 }
 
 // All returns all bp results
-func (s service) All() ([]entity.BloodPressure, error) {
+func (s service) All() ([]models.BloodPressure, error) {
 	results, err := s.repo.All()
 	if err != nil {
-		return []entity.BloodPressure{}, nil
+		return []models.BloodPressure{}, nil
 	}
 	return results, nil
 }
 
 // Create creates a new bp result
-func (s service) Create(req CreateBloodPressureRequest) (entity.BloodPressure, error) {
+func (s service) Create(req CreateBloodPressureRequest) (models.BloodPressure, error) {
 	now := time.Now()
-	insertResult, err := s.repo.Create(entity.BloodPressure{
+	insertResult, err := s.repo.Create(models.BloodPressure{
 		Diastolic:   req.Diastolic,
 		Systolic:    req.Systolic,
 		PulsePerMin: req.PulsePerMin,
@@ -57,7 +57,7 @@ func (s service) Create(req CreateBloodPressureRequest) (entity.BloodPressure, e
 		UpdatedAt:   now,
 	})
 	if err != nil {
-		return entity.BloodPressure{}, err
+		return models.BloodPressure{}, err
 	}
 	idStr := insertResult.InsertedID.(primitive.ObjectID).Hex()
 	return s.Find(idStr)

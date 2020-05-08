@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/kim3z/icat-project-work/internal/auth"
 	"github.com/kim3z/icat-project-work/internal/bloodpressure"
 	"github.com/kim3z/icat-project-work/pkg/dbcontext"
 )
@@ -25,6 +26,10 @@ func main() {
 
 	// /api
 	apiRouter := router.PathPrefix("/api").Subrouter()
+
+	// /api/auth
+	authRouter := apiRouter.PathPrefix("/auth").Subrouter()
+	auth.RegisterHandlers(authRouter, auth.InitService(auth.InitRepository(db)))
 
 	// /api/blood-pressure
 	bpRouter := apiRouter.PathPrefix("/blood-pressure").Subrouter()

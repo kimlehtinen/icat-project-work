@@ -1,4 +1,4 @@
-package bloodpressure
+package datasvc
 
 import (
 	"context"
@@ -6,19 +6,19 @@ import (
 	"log"
 	"time"
 
-	"github.com/kim3z/icat-project-work/internal/entity"
+	"github.com/kim3z/icat-project-work/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Repository interface {
-	Find(id string) (entity.BloodPressure, error)
-	All() ([]entity.BloodPressure, error)
-	Create(entity.BloodPressure) (*mongo.InsertOneResult, error)
+	Find(id string) (models.BloodPressure, error)
+	All() ([]models.BloodPressure, error)
+	Create(models.BloodPressure) (*mongo.InsertOneResult, error)
 }
 
-type BloodPressures []entity.BloodPressure
+type BloodPressures []models.BloodPressure
 
 // repository
 type repository struct {
@@ -33,8 +33,8 @@ func InitRepository(db *mongo.Database) Repository {
 }
 
 // Find returns a bp result by id
-func (r repository) Find(id string) (entity.BloodPressure, error) {
-	var bpDB entity.BloodPressure
+func (r repository) Find(id string) (models.BloodPressure, error) {
+	var bpDB models.BloodPressure
 	objectIDS, _ := primitive.ObjectIDFromHex(id)
 	collection := r.db.Collection(collectionName)
 	filter := bson.M{"_id": objectIDS}
@@ -43,16 +43,16 @@ func (r repository) Find(id string) (entity.BloodPressure, error) {
 
 	if err != nil {
 		fmt.Println("error retrieving user userid : " + id)
-		return entity.BloodPressure{}, err
+		return models.BloodPressure{}, err
 	}
 
 	return bpDB, err
 }
 
 // All returns all bp results
-func (r repository) All() ([]entity.BloodPressure, error) {
+func (r repository) All() ([]models.BloodPressure, error) {
 	collection := r.db.Collection(collectionName)
-	results := []entity.BloodPressure{}
+	results := []models.BloodPressure{}
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
@@ -60,7 +60,7 @@ func (r repository) All() ([]entity.BloodPressure, error) {
 	}
 
 	for cursor.Next(context.TODO()) {
-		var bpResult entity.BloodPressure
+		var bpResult models.BloodPressure
 		err = cursor.Decode(&bpResult)
 		if err != nil {
 			log.Fatal("Error on Decoding the document", err)
@@ -73,7 +73,7 @@ func (r repository) All() ([]entity.BloodPressure, error) {
 }
 
 // Create creates a new bp result
-func (r repository) Create(bp entity.BloodPressure) (*mongo.InsertOneResult, error) {
+func (r repository) Create(bp models.BloodPressure) (*mongo.InsertOneResult, error) {
 	collection := r.db.Collection(collectionName)
 	insertResult, err := collection.InsertOne(context.TODO(), bp)
 	if err != nil {

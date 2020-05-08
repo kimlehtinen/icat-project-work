@@ -1,0 +1,12 @@
+FROM golang:latest
+
+WORKDIR /app
+
+COPY ./ /app
+
+RUN go mod download
+
+RUN go get github.com/githubnemo/CompileDaemon
+
+# on save: auto-compile and run server
+ENTRYPOINT CompileDaemon --build="go build -o auth-dev ./cmd/authcmd/" --command="./auth-dev"
