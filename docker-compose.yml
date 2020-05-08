@@ -13,12 +13,24 @@ services:
       context: ./nginx
     ports:
       - '3050:80'
-  api:
+  datasvc:
     build: 
       context: ./go-server
-      dockerfile: ./cmd/server/Dockerfile.dev
+      dockerfile: ./docker/datadocker/Dockerfile.dev
     ports:
       - '8080:8080'
+    volumes:
+      - type: bind
+        source: ./go-server
+        target: /app
+    links:
+      - mongo-db
+  authsvc:
+    build: 
+      context: ./go-server
+      dockerfile: ./docker/authdocker/Dockerfile.dev
+    ports:
+      - '8081:8080'
     volumes:
       - type: bind
         source: ./go-server
