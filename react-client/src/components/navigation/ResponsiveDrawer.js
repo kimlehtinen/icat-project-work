@@ -23,6 +23,7 @@ import {
   Link
 } from 'react-router-dom';
 import OtherPage from '../../OtherPage'
+import BloodPressure from '../bloodpressure/BloodPressure'
 
 const drawerWidth = 240;
 
@@ -153,6 +154,7 @@ function ResponsiveDrawer(props) {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
+            <Route path="/" component={BloodPressure} />
             <Route path="/otherpage" component={OtherPage} />
           </Switch>
         </main>

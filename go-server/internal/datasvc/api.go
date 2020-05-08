@@ -2,9 +2,13 @@ package datasvc
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
+	"github.com/kim3z/icat-project-work/pkg/wsocket"
 )
 
 type resource struct {
@@ -13,6 +17,33 @@ type resource struct {
 
 type message struct {
 	Message string `json:"message"`
+}
+
+func (res resource) writer(conn *websocket.Conn) {
+	for {
+		ticker := time.NewTicker(2 * time.Second)
+
+		for t := range ticker.C {
+			fmt.Printf("In ticker %+v\n", t)
+
+			results, err := res.service.All()
+			if err != nil {
+				panic(err)
+			}
+
+			jsonString, err := json.Marshal(results)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(jsonString)); err != nil {
+				fmt.Println(err)
+				return
+			}
+
+		}
+	}
 }
 
 // RegisterHandlers register http handlers for bloodpressure
@@ -40,16 +71,38 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/data/all
 func (res resource) all(w http.ResponseWriter, r *http.Request) {
-	results, err := res.service.All()
+	ws, err := wsocket.Upgrade(w, r)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(w, "%+v\n", err)
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(results); err != nil {
-		panic(err)
-	}
+	//go res.writer(ws)
+	go func(conn *websocket.Conn) {
+		for {
+			ticker := time.NewTicker(2 * time.Second)
+
+			for t := range ticker.C {
+				fmt.Printf("In ticker %+v\n", t)
+
+				results, err := res.service.All()
+				if err != nil {
+					panic(err)
+				}
+
+				jsonString, err := json.Marshal(results)
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				if err := conn.WriteMessage(websocket.TextMessage, []byte(jsonString)); err != nil {
+					fmt.Println(err)
+					return
+				}
+
+			}
+		}
+	}(ws)
 }
 
 // GET /api/data/find/{id}
