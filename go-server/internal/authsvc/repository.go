@@ -17,6 +17,7 @@ import (
 
 type Repository interface {
 	Find(id string) (models.User, error)
+	FindUserByEmail(email string) (models.User, error)
 	All() ([]models.User, error)
 	Register(user models.User) (*mongo.InsertOneResult, error)
 	Auth(user AuthUser) (models.JwtToken, error)
@@ -50,7 +51,23 @@ func (r repository) Find(id string) (models.User, error) {
 		return models.User{}, err
 	}
 
-	return userDB, err
+	return userDB, nil
+}
+
+// FindUserByEmail returns a user result by their email address
+func (r repository) FindUserByEmail(email string) (models.User, error) {
+	var userDB models.User
+	collection := r.db.Collection(collectionName)
+	filter := bson.M{"email": email}
+	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	err := collection.FindOne(ctx, filter).Decode(&userDB)
+
+	if err != nil {
+		fmt.Println("error retrieving user user by email : " + email)
+		return models.User{}, err
+	}
+
+	return userDB, nil
 }
 
 // All returns all users

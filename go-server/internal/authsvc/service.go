@@ -1,6 +1,7 @@
 package authsvc
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kim3z/icat-project-work/pkg/models"
@@ -57,6 +58,13 @@ func (s service) All() ([]models.User, error) {
 
 // Create creates a new user
 func (s service) Register(req AuthUser) (models.User, error) {
+	_, err := s.repo.FindUserByEmail(req.Email)
+
+	// user with this email exists
+	if err == nil {
+		return models.User{}, fmt.Errorf("User with email exists already")
+	}
+
 	now := time.Now()
 	insertResult, err := s.repo.Register(models.User{
 		Email:     req.Email,

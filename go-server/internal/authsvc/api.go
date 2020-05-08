@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/kim3z/icat-project-work/pkg/errorhandler"
+
 	"github.com/gorilla/mux"
 )
 
@@ -43,13 +45,15 @@ func (res resource) register(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&input)
 	_, err := res.service.Register(input)
 	if err != nil {
-		panic(err)
+		errorhandler.NewJsonErrorMessage(w, http.StatusBadRequest, err)
+		return
 	}
 
 	jwtToken, err := res.service.Auth(input)
 
 	if err != nil {
-		panic(err)
+		errorhandler.NewJsonErrorMessage(w, http.StatusUnauthorized, err)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -65,7 +69,8 @@ func (res resource) login(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&input)
 	userCreated, err := res.service.Auth(input)
 	if err != nil {
-		panic(err)
+		errorhandler.NewJsonErrorMessage(w, http.StatusUnauthorized, err)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
