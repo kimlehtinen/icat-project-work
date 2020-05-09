@@ -22,8 +22,7 @@ import {
   Route,
   Link
 } from 'react-router-dom';
-import OtherPage from '../../OtherPage'
-import BloodPressure from '../bloodpressure/BloodPressure'
+import AppRoutes from './AppRoutes'
 
 const drawerWidth = 240;
 
@@ -79,10 +78,10 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider></Divider>
       <List>
-          <Link to="/otherpage" className={classes.link}>
+          <Link to="/bloodpressure" className={classes.link}>
             <ListItem button key={'0'}>
               <ListItemIcon><InboxIcon /></ListItemIcon>
-              <ListItemText primary={'Other page'} />
+              <ListItemText primary={'Bloodpressure data'} />
             </ListItem>
           </Link>
       </List>
@@ -152,11 +151,8 @@ function ResponsiveDrawer(props) {
           </Hidden>
         </nav>
         <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route path="/" component={BloodPressure} />
-            <Route path="/otherpage" component={OtherPage} />
-          </Switch>
+            <div className={classes.toolbar} />
+            <AppRoutes />
         </main>
       </div>
     </Router>

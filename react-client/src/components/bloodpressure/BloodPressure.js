@@ -1,10 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import MaterialTable from 'material-table'
 
 class BloodPressure extends Component {
-    ws = new WebSocket('ws://localhost:8080/api/data/all');
+    _isMounted = false
+    ws = new WebSocket('ws://localhost:8080/api/data/all')
 
     state = {
-        dataFromServer: null
+        dataFromServer: null,
+        isLoading: true,
+        columns: null,
+        data: null
     }
 
     renderData() {
@@ -22,16 +27,30 @@ class BloodPressure extends Component {
     }
 
     componentDidMount() {
+        this.setState({
+            columns: [
+                // { title: 'Index', field: 'i', type: 'numeric' },
+                { title: 'Diastolic', field: 'diastolic', type: 'numeric' },
+                { title: 'Pulse/Min', field: 'pulse_per_min', type: 'numeric' },
+            ]
+        })
+
+        this._isMounted = true;
+ 
         this.ws.onopen = () => {
             // on connecting, do nothing but log it to the console
             console.log('connected')
         }
 
         this.ws.onmessage = evt => {
-            // listen to data sent from the websocket server
-            const message = JSON.parse(evt.data)
-            this.setState({dataFromServer: message})
-            console.log(message)
+            if (this._isMounted) {
+                this.setState({isLoading: false})
+                // listen to data sent from the websocket server
+                const message = JSON.parse(evt.data)
+                // this.setState({dataFromServer: message})
+                this.setState({data: message})
+                // console.log(message)
+            }
         }
 
         this.ws.onclose = () => {
@@ -41,11 +60,58 @@ class BloodPressure extends Component {
 
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render() {
+        if (!this.state.columns || !this.state.data) {
+            return (<div>No data</div>)
+        }
+
         return (
-            <div>
-                {this.renderData()}
-            </div>
+            <MaterialTable
+            title="Bloodpressure measurements"
+            columns={this.state.columns}
+            data={this.state.data}
+            editable={{
+                onRowAdd: (newData) =>
+                new Promise((resolve) => {
+                    setTimeout(() => {
+                    resolve();
+                    this.setState((prevState) => {
+                        const data = [...prevState.data];
+                        data.push(newData);
+                        return { ...prevState, data };
+                    });
+                    }, 600);
+                }),
+                onRowUpdate: (newData, oldData) =>
+                new Promise((resolve) => {
+                    setTimeout(() => {
+                    resolve();
+                    if (oldData) {
+                        this.setState((prevState) => {
+                        const data = [...prevState.data];
+                        data[data.indexOf(oldData)] = newData;
+                        return { ...prevState, data };
+                        });
+                    }
+                    }, 600);
+                }),
+                onRowDelete: (oldData) =>
+                new Promise((resolve) => {
+                    setTimeout(() => {
+                    resolve();
+                    this.setState((prevState) => {
+                        const data = [...prevState.data];
+                        data.splice(data.indexOf(oldData), 1);
+                        return { ...prevState, data };
+                    });
+                    }, 600);
+                }),
+            }}
+            />
         );
     }
 }
