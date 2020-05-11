@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	"github.com/kim3z/icat-project-work/pkg/middleware"
 	"github.com/kim3z/icat-project-work/pkg/wsocket"
 )
 
@@ -52,7 +53,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 
 	router.HandleFunc("", res.index).Methods("GET")
 	router.HandleFunc("/all", res.all).Methods("GET")
-	router.HandleFunc("/find/{id}", res.find).Methods("GET")
+	router.Handle("/find/{id}", middleware.Auth(http.HandlerFunc(res.find))).Methods("GET")
 	router.HandleFunc("/create", res.create).Methods("POST")
 }
 

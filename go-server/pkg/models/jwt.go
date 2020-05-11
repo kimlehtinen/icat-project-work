@@ -13,7 +13,11 @@ type JwtToken struct {
 	Expires string
 }
 
+// Key model for JWT authorization
+type Key int
+
 //MyKey jwt handdler
 const (
-	SecretKey = "My-temporary-SECRETKey-2017"
+	JwtKey    Key = 100000
+	SecretKey     = "My-temporary-SECRETKey-2017"
 )
