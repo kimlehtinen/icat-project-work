@@ -24,7 +24,7 @@ func main() {
 	router := mux.NewRouter()
 
 	// /api/auth
-	authsvcRouter := router.PathPrefix("/api/auth").Subrouter()
+	authsvcRouter := router.PathPrefix("/api/v1/auth").Subrouter()
 	authsvc.RegisterHandlers(authsvcRouter, authsvc.InitService(authsvc.InitRepository(db)))
 
 	port := fmt.Sprintf(":%s", strconv.Itoa(serverPortNumber))

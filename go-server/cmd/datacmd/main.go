@@ -24,7 +24,7 @@ func main() {
 	router := mux.NewRouter()
 
 	// /api/datasvc
-	datasvcRouter := router.PathPrefix("/api/data").Subrouter()
+	datasvcRouter := router.PathPrefix("/api/v1/data").Subrouter()
 	datasvc.RegisterHandlers(datasvcRouter, datasvc.InitService(datasvc.InitRepository(db)))
 
 	port := fmt.Sprintf(":%s", strconv.Itoa(serverPortNumber))

@@ -3,7 +3,7 @@ import MaterialTable from 'material-table'
 
 class BloodPressure extends Component {
     _isMounted = false
-    ws = new WebSocket('ws://localhost:8080/api/data/all')
+    ws = new WebSocket('ws://localhost:8080/api/v1/data/all')
 
     state = {
         dataFromServer: null,
