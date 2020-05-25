@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/kim3z/icat-project-work/internal/authsvc"
 	"github.com/kim3z/icat-project-work/pkg/dbcontext"
 )
 
-var serverPortNumber = 8080
+var serverPortNumber = 8081
 
 func main() {
 	db, err := dbcontext.NewConnection()
@@ -27,6 +28,10 @@ func main() {
 	authsvcRouter := router.PathPrefix("/api/v1/auth").Subrouter()
 	authsvc.RegisterHandlers(authsvcRouter, authsvc.InitService(authsvc.InitRepository(db)))
 
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
 	port := fmt.Sprintf(":%s", strconv.Itoa(serverPortNumber))
-	http.ListenAndServe(port, router)
+	http.ListenAndServe(port, handlers.CORS(originsOk, headersOk, methodsOk)(router))
 }

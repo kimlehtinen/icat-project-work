@@ -30,7 +30,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 	router.Handle("/user", middleware.Auth(http.HandlerFunc(res.user))).Methods("GET")
 }
 
-// GET /api/auth
+// GET /api/v<x>/auth
 func (res resource) index(w http.ResponseWriter, r *http.Request) {
 	message := message{
 		Message: "API auth service on port 8081",
@@ -68,7 +68,7 @@ func (res resource) user(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /api/auth/register
+// POST /api/v<x>/auth/register
 func (res resource) register(w http.ResponseWriter, r *http.Request) {
 	var input AuthUser
 	_ = json.NewDecoder(r.Body).Decode(&input)
@@ -92,7 +92,7 @@ func (res resource) register(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /api/auth/login
+// POST /api/v<x>/auth/login
 func (res resource) login(w http.ResponseWriter, r *http.Request) {
 	var input AuthUser
 	_ = json.NewDecoder(r.Body).Decode(&input)
