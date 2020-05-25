@@ -13,6 +13,8 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import { register } from '../../actions/authActions';
 
 class Register extends Component {
 
@@ -21,6 +23,12 @@ class Register extends Component {
         password: '',
         showPassword: false,
         msg: null,
+    }
+
+    static propTypes = {
+        isAuthenticated: PropTypes.bool,
+        error: PropTypes.object.isRequired,
+        register: PropTypes.func.isRequired
     }
 
     componentDidMount() {
@@ -41,6 +49,13 @@ class Register extends Component {
 
     handleClickRegister = () => {
         console.log('Registering...');
+        const newUser = {
+            email: this.state.email,
+            password: this.state.password
+        };
+
+        // attempt register
+        this.props.register(newUser)
     };
 
     render() {
@@ -129,7 +144,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.error
 });
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Register));
+export default connect(mapStateToProps, {register})(withStyles(styles, { withTheme: true })(Register));

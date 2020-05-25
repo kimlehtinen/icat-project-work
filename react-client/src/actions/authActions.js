@@ -11,6 +11,13 @@ import {
   REGISTER_FAIL
 } from './types';
 
+/*
+The code in this file is used from
+Brad Traversy's "Learn The Mern Stack" Youtube tutorial.
+Source code is taken from https://github.com/bradtraversy/mern_shopping_list/tree/master/client (MIT License)
+and is modified/built upon by Kim Lehtinen.
+*/
+
 // Check token & load user
 export const loadUser = () => (dispatch, getState) => {
   // User loading
@@ -33,34 +40,38 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 // Register User
-export const register = ({ name, email, password }) => (
+export const register = ({ email, password }) => (
   dispatch
 ) => {
+  console.log('Inside register action');
+
   // Headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
-
   // Request body
-  const body = JSON.stringify({ name, email, password });
+  const body = JSON.stringify({ email, password });
 
   axios
     .post('/api/v1/auth/register', body, config)
-    .then(res =>
+    .then(res => {
+      console.log('RES:', res)
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data
       })
+    }
     )
     .catch(err => {
-      dispatch(
+      console.log('ERROR:', err);
+      /*dispatch(
         returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
       );
       dispatch({
         type: REGISTER_FAIL
-      });
+      });*/
     });
 };
 
@@ -72,7 +83,8 @@ export const login = ({ email, password }) => (
   const config = {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    crossDomain: true
   };
 
   // Request body

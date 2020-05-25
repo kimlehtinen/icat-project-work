@@ -1,6 +1,13 @@
 
 import { GET_ERRORS, CLEAR_ERRORS } from '../actions/types';
 
+/*
+The code in this file is used from
+Brad Traversy's "Learn The Mern Stack" Youtube tutorial.
+Source code is taken from https://github.com/bradtraversy/mern_shopping_list/tree/master/client (MIT License)
+and is modified/built upon by Kim Lehtinen.
+*/
+
 const initialState = {
   msg: {},
   status: null,

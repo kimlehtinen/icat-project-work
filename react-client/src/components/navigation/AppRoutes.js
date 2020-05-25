@@ -12,7 +12,7 @@ class AppRoutes extends Component {
         return (
             <Switch>
                 <Route path="/bloodpressure" component={BloodPressure} />
-                <Route path="/" component={Register} />
+                <Route path="/" render={props => <Register {...props} />} />
             </Switch>
         );
     }
