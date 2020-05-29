@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -17,12 +16,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
+  BrowserRouter as Router
 } from 'react-router-dom';
-import AppRoutes from './AppRoutes'
+import AppRoutes from './AppRoutes';
+import SideMenu from './SideMenu';
 
 const drawerWidth = 240;
 
@@ -77,17 +74,10 @@ function ResponsiveDrawer(props) {
     <div>
       <div className={classes.toolbar} />
       <Divider></Divider>
-      <List>
-          <Link to="/bloodpressure" className={classes.link}>
-            <ListItem button key={'0'}>
-              <ListItemIcon><InboxIcon /></ListItemIcon>
-              <ListItemText primary={'Bloodpressure data'} />
-            </ListItem>
-          </Link>
-      </List>
+      <SideMenu />
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Logout'].map((text, index) => (
+        {['All mail', 'Trash'].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
             <ListItemText primary={text} />
@@ -158,13 +148,5 @@ function ResponsiveDrawer(props) {
     </Router>
   );
 }
-
-ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
 
 export default ResponsiveDrawer;

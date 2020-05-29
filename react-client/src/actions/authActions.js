@@ -19,7 +19,7 @@ and is modified/built upon by Kim Lehtinen.
 */
 
 // Check token & load user
-export const loadUser = () => (dispatch, getState) => {
+export const authInit = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
@@ -99,9 +99,10 @@ export const login = ({ email, password }) => (
       })
     )
     .catch(err => {
-      dispatch(
+      /*dispatch(
         returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
-      );
+      );*/
+      console.log('LOGIN ERROR:', err);
       dispatch({
         type: LOGIN_FAIL
       });
@@ -127,11 +128,9 @@ export const tokenConfig = (getState) => {
     }
   };
 
-  // If token, add to headers
   if (token) {
-    // config.headers['x-auth-token'] = token;
-    config.headers['Authorization'] = token;
-
+    // add bearer to http headers
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
 
   return config;

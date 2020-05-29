@@ -1,24 +1,14 @@
-import React, { Component } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
 import ResponsiveDrawer from './components/navigation/ResponsiveDrawer'
-
 import { Provider } from 'react-redux';
 import store from './store'
+import { authInit } from './actions/authActions';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
-export default function App() {
-  const classes = useStyles();
+const App = () => {
+  useEffect(() => {
+    store.dispatch(authInit());
+  }, []);
 
   return (
     <Provider store={store}>
@@ -26,3 +16,5 @@ export default function App() {
     </Provider>
   );
 }
+
+export default App;

@@ -17,7 +17,7 @@ and is modified/built upon by Kim Lehtinen.
 */
   
   const initialState = {
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem('token'), // get jwt token
     isAuthenticated: null,
     isLoading: false,
     user: null
@@ -39,7 +39,8 @@ and is modified/built upon by Kim Lehtinen.
         };
       case LOGIN_SUCCESS:
       case REGISTER_SUCCESS:
-        localStorage.setItem('token', action.payload.token);
+        // save token from golang auth service
+        localStorage.setItem('token', action.payload.Token);
         return {
           ...state,
           ...action.payload,
@@ -50,6 +51,7 @@ and is modified/built upon by Kim Lehtinen.
       case LOGIN_FAIL:
       case LOGOUT_SUCCESS:
       case REGISTER_FAIL:
+        // remove token
         localStorage.removeItem('token');
         return {
           ...state,
