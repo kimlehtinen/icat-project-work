@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class ProtectedRoute extends Component {
+    /**
+     * This component checks if a user is allowed to visit a route or not.
+     * If not authenticated, user is redirected to login page.
+     */
+
     static propTypes = {
         auth: PropTypes.object.isRequired
     }

@@ -10,6 +10,10 @@ import Login from '../authentication/Login'
 import ProtectedRoute from './ProtectedRoute';
 
 class AppRoutes extends Component {
+    /**
+     * This component determines which route/component should be shown to user.
+     */
+
     render() {
         return (
             <Switch>

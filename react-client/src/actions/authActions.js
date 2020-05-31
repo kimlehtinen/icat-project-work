@@ -18,13 +18,19 @@ Source code is taken from https://github.com/bradtraversy/mern_shopping_list/tre
 and is modified/built upon by Kim Lehtinen.
 */
 
-// Check token & load user
+const API_VERSION = 1; // this till be added to all http requests /api/v${API_VERSION}/*
+
+/**
+ * Whenever page is loaded, authInit loads user information
+ * using jwt token. If this fails, user is redirected to login page.
+ * This is fired for example on every refresh in App.js
+ */
 export const authInit = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
   axios
-    .get('/api/v1/auth/user', tokenConfig(getState))
+    .get(`/api/v${API_VERSION}/auth/user`, authToken(getState))
     .then(res =>
       dispatch({
         type: USER_LOADED,
@@ -39,23 +45,27 @@ export const authInit = () => (dispatch, getState) => {
     });
 };
 
-// Register User
+/**
+ * Registers new user
+ * 
+ * @param {*} newUser{email, password}
+ */
 export const register = ({ email, password }) => (
   dispatch
 ) => {
-  console.log('Inside register action');
 
-  // Headers
+  // http headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
-  // Request body
+
+  // POST request body
   const body = JSON.stringify({ email, password });
 
   axios
-    .post('/api/v1/auth/register', body, config)
+    .post(`/api/v${API_VERSION}/auth/register`, body, config)
     .then(res => {
       console.log('RES:', res)
       dispatch({
@@ -75,11 +85,15 @@ export const register = ({ email, password }) => (
     });
 };
 
-// Login User
+/**
+ * Logs in user
+ * 
+ * @param {*} user{email, password}
+ */
 export const login = ({ email, password }) => (
   dispatch
 ) => {
-  // Headers
+  // http headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -91,7 +105,7 @@ export const login = ({ email, password }) => (
   const body = JSON.stringify({ email, password });
 
   axios
-    .post('/api/v1/auth/login', body, config)
+    .post(`/api/v${API_VERSION}/auth/login`, body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,
@@ -109,19 +123,25 @@ export const login = ({ email, password }) => (
     });
 };
 
-// Logout User
+/**
+ * Logs out user
+ */
 export const logout = () => {
   return {
     type: LOGOUT_SUCCESS
   };
 };
 
-// Setup config/headers and token
-export const tokenConfig = (getState) => {
+/**
+ * Add jwt token to http headers
+ * 
+ * @param {*} getState 
+ */
+export const authToken = (getState) => {
   // Get token from localstorage
   const token = getState().auth.token;
 
-  // Headers
+  // http headers
   const config = {
     headers: {
       'Content-type': 'application/json'

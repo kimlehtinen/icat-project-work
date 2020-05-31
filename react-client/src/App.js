@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import store from './store'
 import { authInit } from './actions/authActions';
 
-
 const App = () => {
   useEffect(() => {
     store.dispatch(authInit());
