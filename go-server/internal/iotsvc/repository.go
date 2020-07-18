@@ -1,4 +1,4 @@
-package datasvc
+package iotsvc
 
 import (
 	"context"
@@ -13,8 +13,7 @@ import (
 )
 
 type Repository interface {
-	FindBloodPressure(id string) (models.BloodPressure, error)
-	All() ([]models.BloodPressure, error)
+	Find(id string) (models.BloodPressure, error)
 	Create(models.BloodPressure) (*mongo.InsertOneResult, error)
 }
 
@@ -32,8 +31,8 @@ func InitRepository(db *mongo.Database) Repository {
 	return repository{db}
 }
 
-// FindBloodPressure returns a bp result by id
-func (r repository) FindBloodPressure(id string) (models.BloodPressure, error) {
+// Find returns a bp result by id
+func (r repository) Find(id string) (models.BloodPressure, error) {
 	var bpDB models.BloodPressure
 	objectIDS, _ := primitive.ObjectIDFromHex(id)
 	collection := r.db.Collection(collectionName)
@@ -47,29 +46,6 @@ func (r repository) FindBloodPressure(id string) (models.BloodPressure, error) {
 	}
 
 	return bpDB, err
-}
-
-// All returns all bp results
-func (r repository) All() ([]models.BloodPressure, error) {
-	collection := r.db.Collection(collectionName)
-	results := []models.BloodPressure{}
-	cursor, err := collection.Find(context.TODO(), bson.M{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	for cursor.Next(context.TODO()) {
-		var bpResult models.BloodPressure
-		err = cursor.Decode(&bpResult)
-		if err != nil {
-			log.Fatal("Error on Decoding the document", err)
-		}
-
-		results = append(results, bpResult)
-	}
-
-	return results, nil
 }
 
 // Create creates a new bp result

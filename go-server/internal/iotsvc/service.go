@@ -1,15 +1,15 @@
-package datasvc
+package iotsvc
 
 import (
 	"time"
+
+	"github.com/kim3z/icat-project-work/internal/datasvc"
 
 	"github.com/kim3z/icat-project-work/pkg/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Service interface {
-	FindBloodPressure(id string) (models.BloodPressure, error)
-	All() ([]models.BloodPressure, error)
 	Create(input CreateBloodPressureRequest) (models.BloodPressure, error)
 }
 
@@ -20,36 +20,19 @@ type CreateBloodPressureRequest struct {
 }
 
 type service struct {
-	repo Repository
+	iotRepo  Repository
+	dataRepo datasvc.Repository
 }
 
 // InitService creates a new bp service
-func InitService(repo Repository) Service {
-	return service{repo}
-}
-
-// FindBloodPressure returns a bp result by id
-func (s service) FindBloodPressure(id string) (models.BloodPressure, error) {
-	bp, err := s.repo.FindBloodPressure(id)
-	if err != nil {
-		return models.BloodPressure{}, err
-	}
-	return bp, nil
-}
-
-// All returns all bp results
-func (s service) All() ([]models.BloodPressure, error) {
-	results, err := s.repo.All()
-	if err != nil {
-		return []models.BloodPressure{}, nil
-	}
-	return results, nil
+func InitService(iotRepo Repository, dataRepo datasvc.Repository) Service {
+	return service{iotRepo, dataRepo}
 }
 
 // Create creates a new bp result
 func (s service) Create(req CreateBloodPressureRequest) (models.BloodPressure, error) {
 	now := time.Now()
-	insertResult, err := s.repo.Create(models.BloodPressure{
+	insertResult, err := s.iotRepo.Create(models.BloodPressure{
 		Diastolic:   req.Diastolic,
 		Systolic:    req.Systolic,
 		PulsePerMin: req.PulsePerMin,
@@ -60,5 +43,6 @@ func (s service) Create(req CreateBloodPressureRequest) (models.BloodPressure, e
 		return models.BloodPressure{}, err
 	}
 	idStr := insertResult.InsertedID.(primitive.ObjectID).Hex()
-	return s.FindBloodPressure(idStr)
+
+	return s.dataRepo.FindBloodPressure(idStr)
 }

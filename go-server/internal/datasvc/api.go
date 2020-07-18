@@ -57,7 +57,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 	router.HandleFunc("/create", res.create).Methods("POST")
 }
 
-// GET /api/data
+// GET /api/v<x>/data
 func (res resource) index(w http.ResponseWriter, r *http.Request) {
 	message := message{
 		Message: "API data service on port 8080",
@@ -70,7 +70,7 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GET /api/data/all
+// GET /api/v<x>/data/all
 func (res resource) all(w http.ResponseWriter, r *http.Request) {
 	ws, err := wsocket.Upgrade(w, r)
 	if err != nil {
@@ -106,11 +106,11 @@ func (res resource) all(w http.ResponseWriter, r *http.Request) {
 	}(ws)
 }
 
-// GET /api/data/find/{id}
+// GET /api/v<x>/data/find/{id}
 func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
-	bpResult, err := res.service.Find(id)
+	bpResult, err := res.service.FindBloodPressure(id)
 
 	if err != nil {
 		panic(err)
@@ -123,7 +123,7 @@ func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /api/data/create
+// POST /api/v<x>/data/create
 func (res resource) create(w http.ResponseWriter, r *http.Request) {
 	var input CreateBloodPressureRequest
 	_ = json.NewDecoder(r.Body).Decode(&input)

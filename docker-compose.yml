@@ -29,6 +29,18 @@ services:
         target: /app
     links:
       - mongo-db
+  iotsvc:
+    build: 
+      context: ./go-server
+      dockerfile: ./docker/iotdocker/Dockerfile.dev
+    ports:
+      - '8082:8082'
+    volumes:
+      - type: bind
+        source: ./go-server
+        target: /app
+    links:
+      - mongo-db
   authsvc:
     build: 
       context: ./go-server
