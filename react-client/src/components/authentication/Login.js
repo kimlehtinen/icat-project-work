@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/authActions';
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
 
@@ -60,6 +61,10 @@ class Login extends Component {
 
     render() {
         const { classes } = this.props;
+
+        if (this.props.isAuthenticated) {
+            return <Redirect to='/bloodpressure'/>;
+        }
 
         return (
             <div className={classes.root}>
