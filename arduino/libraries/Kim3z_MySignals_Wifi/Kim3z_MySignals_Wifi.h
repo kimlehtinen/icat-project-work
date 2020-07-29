@@ -42,7 +42,7 @@ class Kim3z_MySignals_Wifi
   public:
     Kim3z_MySignals_Wifi();
     void connectToWifi(char* wifiSSID, char* wifiPassword);
-    void post(char* url, char* path, char* port);
+    void postUrlEncoded(char* url, char* path, char* port, char* encodedData);
   private:
     int8_t sendATcommand(char* ATcommand, char* expected_answer1, unsigned int timeout);
 };

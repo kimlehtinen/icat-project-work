@@ -34,7 +34,7 @@ Kim3z_MySignals_Wifi::Kim3z_MySignals_Wifi()
 }
 
 // Sends http requests to a webserver
-void Kim3z_MySignals_Wifi::post(char* url, char* path, char* port)
+void Kim3z_MySignals_Wifi::postUrlEncoded(char* url, char* path, char* port, char* encodedData)
 {
   if (sendATcommand("AT+CIPMUX=1", "OK", 6000)) {
         MySignals.println("AT+CIPMUX=1: OK");
@@ -50,8 +50,6 @@ void Kim3z_MySignals_Wifi::post(char* url, char* path, char* port)
     } else {
         MySignals.println("TCP: ERROR");
     }
-    
-    const char* data = "foo=bartestingjees";
 
     // http method
     int method_initial_len = 16;
@@ -68,15 +66,15 @@ void Kim3z_MySignals_Wifi::post(char* url, char* path, char* port)
 
     // http content-length
     int content_initial_len = 18;
-    char content_length[content_initial_len + strlen(data)];
-    sprintf(content_length, "Content-Length: %i\r\n\r\n", strlen(data));
+    char content_length[content_initial_len + strlen(encodedData)];
+    sprintf(content_length, "Content-Length: %i\r\n\r\n", strlen(encodedData));
 
     // total length of http request string
-    int cmd_len = strlen(method) + strlen(host) + strlen(contentType) + strlen(content_length) + strlen(data);
+    int cmd_len = strlen(method) + strlen(host) + strlen(contentType) + strlen(content_length) + strlen(encodedData);
 
     // join all parts of http request to create final http string
     char cmd[cmd_len];
-    sprintf(cmd, "%s%s%s%s%s", method, host, contentType, content_length, data);
+    sprintf(cmd, "%s%s%s%s%s", method, host, contentType, content_length, encodedData);
 
     char cipsend[64];
     sprintf(cipsend, "AT+CIPSEND=4,%i", cmd_len);
