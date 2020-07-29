@@ -3,6 +3,7 @@ package iotsvc
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -20,7 +21,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 	res := resource{service}
 
 	router.HandleFunc("", res.index).Methods("GET")
-	router.HandleFunc("/create", res.create).Methods("POST")
+	router.HandleFunc("/blood-pressure/store", res.storeBloodPressure).Methods("POST")
 }
 
 // GET /api/v<x>/iot
@@ -36,10 +37,29 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /api/v<x>/iot/create
-func (res resource) create(w http.ResponseWriter, r *http.Request) {
-	var input CreateBloodPressureRequest
-	_ = json.NewDecoder(r.Body).Decode(&input)
+// POST /api/v<x>/iot/blood-pressure/store
+func (res resource) storeBloodPressure(w http.ResponseWriter, r *http.Request) {
+	diastolic, err := strconv.ParseFloat(r.FormValue("diastolic"), 64)
+	if err != nil {
+		panic(err)
+	}
+
+	systolic, err := strconv.ParseFloat(r.FormValue("systolic"), 64)
+	if err != nil {
+		panic(err)
+	}
+
+	pulsePerMin, err := strconv.ParseFloat(r.FormValue("pulse_per_min"), 64)
+	if err != nil {
+		panic(err)
+	}
+
+	input := CreateBloodPressureRequest{
+		Diastolic:   diastolic,
+		Systolic:    systolic,
+		PulsePerMin: pulsePerMin,
+	}
+
 	bpCreated, err := res.service.Create(input)
 	if err != nil {
 		panic(err)

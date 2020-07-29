@@ -54,7 +54,6 @@ func RegisterHandlers(router *mux.Router, service Service) {
 	router.HandleFunc("", res.index).Methods("GET")
 	router.HandleFunc("/all", res.all).Methods("GET")
 	router.Handle("/find/{id}", middleware.Auth(http.HandlerFunc(res.find))).Methods("GET")
-	router.HandleFunc("/create", res.create).Methods("POST")
 }
 
 // GET /api/v<x>/data
@@ -119,22 +118,6 @@ func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(bpResult); err != nil {
-		panic(err)
-	}
-}
-
-// POST /api/v<x>/data/create
-func (res resource) create(w http.ResponseWriter, r *http.Request) {
-	var input CreateBloodPressureRequest
-	_ = json.NewDecoder(r.Body).Decode(&input)
-	bpCreated, err := res.service.Create(input)
-	if err != nil {
-		panic(err)
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(bpCreated); err != nil {
 		panic(err)
 	}
 }

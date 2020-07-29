@@ -22,7 +22,7 @@ services:
       context: ./go-services
       dockerfile: ./docker/datadocker/Dockerfile.dev
     ports:
-      - '8080:8080'
+      - '8080'
     volumes:
       - type: bind
         source: ./go-services
@@ -34,7 +34,7 @@ services:
       context: ./go-services
       dockerfile: ./docker/iotdocker/Dockerfile.dev
     ports:
-      - '8082:8082'
+      - '8082'
     volumes:
       - type: bind
         source: ./go-services
@@ -46,7 +46,7 @@ services:
       context: ./go-services
       dockerfile: ./docker/authdocker/Dockerfile.dev
     ports:
-      - '8081:8081'
+      - '8081'
     volumes:
       - type: bind
         source: ./go-services
