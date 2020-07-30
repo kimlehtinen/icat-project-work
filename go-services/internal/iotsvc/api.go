@@ -22,6 +22,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 
 	router.HandleFunc("", res.index).Methods("GET")
 	router.HandleFunc("/blood-pressure/store", res.storeBloodPressure).Methods("POST")
+	router.HandleFunc("/temperature/store", res.storeTemperature).Methods("POST")
 }
 
 // GET /api/v<x>/iot
@@ -60,7 +61,7 @@ func (res resource) storeBloodPressure(w http.ResponseWriter, r *http.Request) {
 		PulsePerMin: pulsePerMin,
 	}
 
-	bpCreated, err := res.service.Create(input)
+	bpCreated, err := res.service.StoreBloodPressure(input)
 	if err != nil {
 		panic(err)
 	}
@@ -68,6 +69,25 @@ func (res resource) storeBloodPressure(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(bpCreated); err != nil {
+		panic(err)
+	}
+}
+
+// POST /api/v<x>/iot/temperature/store
+func (res resource) storeTemperature(w http.ResponseWriter, r *http.Request) {
+	temperature, err := strconv.ParseFloat(r.FormValue("temperature"), 64)
+	if err != nil {
+		panic(err)
+	}
+
+	temperatureCreated, err := res.service.StoreTemperature(temperature)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(temperatureCreated); err != nil {
 		panic(err)
 	}
 }

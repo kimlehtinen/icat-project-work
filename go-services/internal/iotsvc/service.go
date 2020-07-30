@@ -10,7 +10,8 @@ import (
 )
 
 type Service interface {
-	Create(input CreateBloodPressureRequest) (models.BloodPressure, error)
+	StoreBloodPressure(input CreateBloodPressureRequest) (models.BloodPressure, error)
+	StoreTemperature(temperature float64) (models.Temperature, error)
 }
 
 type CreateBloodPressureRequest struct {
@@ -29,10 +30,10 @@ func InitService(iotRepo Repository, dataRepo datasvc.Repository) Service {
 	return service{iotRepo, dataRepo}
 }
 
-// Create creates a new bp result
-func (s service) Create(req CreateBloodPressureRequest) (models.BloodPressure, error) {
+// StoreBloodPressure creates a new bp result
+func (s service) StoreBloodPressure(req CreateBloodPressureRequest) (models.BloodPressure, error) {
 	now := time.Now()
-	insertResult, err := s.iotRepo.Create(models.BloodPressure{
+	insertResult, err := s.iotRepo.StoreBloodPressure(models.BloodPressure{
 		Diastolic:   req.Diastolic,
 		Systolic:    req.Systolic,
 		PulsePerMin: req.PulsePerMin,
@@ -45,4 +46,20 @@ func (s service) Create(req CreateBloodPressureRequest) (models.BloodPressure, e
 	idStr := insertResult.InsertedID.(primitive.ObjectID).Hex()
 
 	return s.dataRepo.FindBloodPressure(idStr)
+}
+
+// StoreBloodPressure creates a new temperature result
+func (s service) StoreTemperature(temperature float64) (models.Temperature, error) {
+	now := time.Now()
+	insertResult, err := s.iotRepo.StoreTemperature(models.Temperature{
+		Temperature: temperature,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		return models.Temperature{}, err
+	}
+	idStr := insertResult.InsertedID.(primitive.ObjectID).Hex()
+
+	return s.dataRepo.FindTemperature(idStr)
 }

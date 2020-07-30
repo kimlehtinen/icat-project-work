@@ -10,6 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+type databaseCollections struct {
+	BloodPressure string
+	Temperature   string
+}
+
 // NewConnection creates new database connection
 func NewConnection() (*mongo.Database, error) {
 	// Database Config
@@ -31,4 +36,13 @@ func NewConnection() (*mongo.Database, error) {
 	}
 	db := client.Database("icat-project-work")
 	return db, nil
+}
+
+func Collections() databaseCollections {
+	collections := databaseCollections{
+		BloodPressure: "bloodpressure",
+		Temperature:   "temperature",
+	}
+
+	return collections
 }

@@ -2,56 +2,44 @@ package iotsvc
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"time"
+
+	"github.com/kim3z/icat-project-work/pkg/dbcontext"
 
 	"github.com/kim3z/icat-project-work/pkg/models"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Repository interface {
-	Find(id string) (models.BloodPressure, error)
-	Create(models.BloodPressure) (*mongo.InsertOneResult, error)
+	StoreBloodPressure(models.BloodPressure) (*mongo.InsertOneResult, error)
+	StoreTemperature(models.Temperature) (*mongo.InsertOneResult, error)
 }
-
-type BloodPressures []models.BloodPressure
 
 // repository
 type repository struct {
 	db *mongo.Database
 }
 
-var collectionName = "test"
-
 // InitRepository creates a new blodpressure repository
 func InitRepository(db *mongo.Database) Repository {
 	return repository{db}
 }
 
-// Find returns a bp result by id
-func (r repository) Find(id string) (models.BloodPressure, error) {
-	var bpDB models.BloodPressure
-	objectIDS, _ := primitive.ObjectIDFromHex(id)
-	collection := r.db.Collection(collectionName)
-	filter := bson.M{"_id": objectIDS}
-	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
-	err := collection.FindOne(ctx, filter).Decode(&bpDB)
-
+// StoreBloodPressure creates a new bp result
+func (r repository) StoreBloodPressure(bp models.BloodPressure) (*mongo.InsertOneResult, error) {
+	collection := r.db.Collection(dbcontext.Collections().BloodPressure)
+	insertResult, err := collection.InsertOne(context.TODO(), bp)
 	if err != nil {
-		fmt.Println("error retrieving user userid : " + id)
-		return models.BloodPressure{}, err
+		log.Fatal(err)
+		return &mongo.InsertOneResult{}, err
 	}
-
-	return bpDB, err
+	return insertResult, nil
 }
 
-// Create creates a new bp result
-func (r repository) Create(bp models.BloodPressure) (*mongo.InsertOneResult, error) {
-	collection := r.db.Collection(collectionName)
-	insertResult, err := collection.InsertOne(context.TODO(), bp)
+// StoreBloodPressure creates a new temperature result
+func (r repository) StoreTemperature(temperature models.Temperature) (*mongo.InsertOneResult, error) {
+	collection := r.db.Collection(dbcontext.Collections().Temperature)
+	insertResult, err := collection.InsertOne(context.TODO(), temperature)
 	if err != nil {
 		log.Fatal(err)
 		return &mongo.InsertOneResult{}, err

@@ -27,7 +27,7 @@ func (res resource) writer(conn *websocket.Conn) {
 		for t := range ticker.C {
 			fmt.Printf("In ticker %+v\n", t)
 
-			results, err := res.service.All()
+			results, err := res.service.AllBloodPressure()
 			if err != nil {
 				panic(err)
 			}
@@ -52,7 +52,7 @@ func RegisterHandlers(router *mux.Router, service Service) {
 	res := resource{service}
 
 	router.HandleFunc("", res.index).Methods("GET")
-	router.HandleFunc("/all", res.all).Methods("GET")
+	router.HandleFunc("/all/blood-pressure", res.allBloodPressure).Methods("GET")
 	router.Handle("/find/{id}", middleware.Auth(http.HandlerFunc(res.find))).Methods("GET")
 }
 
@@ -69,8 +69,8 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GET /api/v<x>/data/all
-func (res resource) all(w http.ResponseWriter, r *http.Request) {
+// GET /api/v<x>/data/all/blood-pressure
+func (res resource) allBloodPressure(w http.ResponseWriter, r *http.Request) {
 	ws, err := wsocket.Upgrade(w, r)
 	if err != nil {
 		fmt.Fprintf(w, "%+v\n", err)
@@ -84,7 +84,7 @@ func (res resource) all(w http.ResponseWriter, r *http.Request) {
 			for t := range ticker.C {
 				fmt.Printf("In ticker %+v\n", t)
 
-				results, err := res.service.All()
+				results, err := res.service.AllBloodPressure()
 				if err != nil {
 					panic(err)
 				}
