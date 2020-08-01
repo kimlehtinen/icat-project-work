@@ -30,8 +30,13 @@ class SideMenu extends Component {
                     <ListItem button>
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={'Bloodpressure data'} />
-                    </ListItem>
-                    
+                    </ListItem>      
+                </Link>
+                <Link to="/temperature" className={classes.link}>
+                    <ListItem button>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary={'Temperature data'} />
+                    </ListItem>      
                 </Link>
                 <ListItem button>
                     <ListItemIcon><InboxIcon /></ListItemIcon>

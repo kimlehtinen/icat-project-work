@@ -22,7 +22,7 @@ services:
       context: ./go-services
       dockerfile: ./docker/datadocker/Dockerfile.dev
     ports:
-      - '8080'
+      - '8080:8080'
     volumes:
       - type: bind
         source: ./go-services

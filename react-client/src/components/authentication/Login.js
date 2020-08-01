@@ -63,7 +63,7 @@ class Login extends Component {
         const { classes } = this.props;
 
         if (this.props.isAuthenticated) {
-            return <Redirect to='/bloodpressure'/>;
+            return <Redirect to='/temperature'/>;
         }
 
         return (
