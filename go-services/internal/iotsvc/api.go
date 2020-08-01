@@ -1,11 +1,11 @@
 package iotsvc
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/kim3z/icat-project-work/pkg/utils"
 )
 
 type resource struct {
@@ -31,28 +31,27 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 		Message: "API iot service on port 8082",
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(message); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, message, http.StatusOK)
 }
 
 // POST /api/v<x>/iot/blood-pressure/store
 func (res resource) storeBloodPressure(w http.ResponseWriter, r *http.Request) {
 	diastolic, err := strconv.ParseFloat(r.FormValue("diastolic"), 64)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	systolic, err := strconv.ParseFloat(r.FormValue("systolic"), 64)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	pulsePerMin, err := strconv.ParseFloat(r.FormValue("pulse_per_min"), 64)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	input := CreateBloodPressureRequest{
@@ -63,31 +62,25 @@ func (res resource) storeBloodPressure(w http.ResponseWriter, r *http.Request) {
 
 	bpCreated, err := res.service.StoreBloodPressure(input)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(bpCreated); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, bpCreated, http.StatusCreated)
 }
 
 // POST /api/v<x>/iot/temperature/store
 func (res resource) storeTemperature(w http.ResponseWriter, r *http.Request) {
 	temperature, err := strconv.ParseFloat(r.FormValue("temperature"), 64)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	temperatureCreated, err := res.service.StoreTemperature(temperature)
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(temperatureCreated); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, temperatureCreated, http.StatusCreated)
 }

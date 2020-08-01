@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/kim3z/icat-project-work/pkg/datastreamtypes"
+	"github.com/kim3z/icat-project-work/pkg/utils"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -29,7 +30,9 @@ func RegisterHandlers(router *mux.Router, service Service) {
 
 	router.HandleFunc("", res.index).Methods("GET")
 
-	router.HandleFunc("/all/blood-pressure", res.allBloodPressure).Methods("GET")
+	router.HandleFunc("/all-live/blood-pressure", res.allBloodPressure).Methods("GET")
+	router.HandleFunc("/all-live/temperature", res.allTemperature).Methods("GET")
+
 	router.HandleFunc("/all/temperature", res.allTemperature).Methods("GET")
 
 	router.HandleFunc("/current/temperature", res.currentTemperature).Methods("GET")
@@ -43,11 +46,7 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 		Message: "API data service on port 8080",
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(message); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, message, http.StatusOK)
 }
 
 // GET /api/v<x>/data/all/blood-pressure
@@ -55,9 +54,21 @@ func (res resource) allBloodPressure(w http.ResponseWriter, r *http.Request) {
 	res.websocketDataStreamer(&w, r, datastreamtypes.AllBloodPressure)
 }
 
+// GET /api/v<x>/data/all-live/temperature
+func (res resource) allLiveTemperature(w http.ResponseWriter, r *http.Request) {
+	res.websocketDataStreamer(&w, r, datastreamtypes.AllTemperature)
+}
+
 // GET /api/v<x>/data/all/temperature
 func (res resource) allTemperature(w http.ResponseWriter, r *http.Request) {
-	res.websocketDataStreamer(&w, r, datastreamtypes.AllTemperature)
+	temperatures, err := res.service.AllTemperature()
+
+	if err != nil {
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteHttpJson(w, temperatures, http.StatusOK)
 }
 
 // GET /api/v<x>/data/current/temperature
@@ -72,14 +83,11 @@ func (res resource) find(w http.ResponseWriter, r *http.Request) {
 	bpResult, err := res.service.FindBloodPressure(id)
 
 	if err != nil {
-		panic(err)
+		utils.WriteHttpJsonError(w, http.StatusInternalServerError, err)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(bpResult); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, bpResult, http.StatusOK)
 }
 
 func (res resource) websocketDataStreamer(w *http.ResponseWriter, r *http.Request, dsType datastreamtypes.DataStreamType) {

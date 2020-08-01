@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kim3z/icat-project-work/pkg/errorhandler"
 	"github.com/kim3z/icat-project-work/pkg/middleware"
 	"github.com/kim3z/icat-project-work/pkg/models"
+	"github.com/kim3z/icat-project-work/pkg/utils"
 
 	"github.com/gorilla/mux"
 )
@@ -36,11 +36,7 @@ func (res resource) index(w http.ResponseWriter, r *http.Request) {
 		Message: "API auth service on port 8081",
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(message); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, message, http.StatusOK)
 }
 
 // GET /api/auth/user
@@ -54,18 +50,14 @@ func (res resource) user(w http.ResponseWriter, r *http.Request) {
 	user, err := res.service.Find(claims.UserID)
 
 	if err != nil {
-		errorhandler.NewJsonErrorMessage(w, http.StatusBadRequest, err)
+		utils.WriteHttpJsonError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	// don't return password hash
 	user.Password = ""
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(user); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, user, http.StatusOK)
 }
 
 // POST /api/v<x>/auth/register
@@ -74,37 +66,29 @@ func (res resource) register(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&input)
 	_, err := res.service.Register(input)
 	if err != nil {
-		errorhandler.NewJsonErrorMessage(w, http.StatusBadRequest, err)
+		utils.WriteHttpJsonError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	jwtToken, err := res.service.Auth(input)
 
 	if err != nil {
-		errorhandler.NewJsonErrorMessage(w, http.StatusUnauthorized, err)
+		utils.WriteHttpJsonError(w, http.StatusUnauthorized, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(jwtToken); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, jwtToken, http.StatusCreated)
 }
 
 // POST /api/v<x>/auth/login
 func (res resource) login(w http.ResponseWriter, r *http.Request) {
 	var input AuthUser
 	_ = json.NewDecoder(r.Body).Decode(&input)
-	userCreated, err := res.service.Auth(input)
+	userLogin, err := res.service.Auth(input)
 	if err != nil {
-		errorhandler.NewJsonErrorMessage(w, http.StatusUnauthorized, err)
+		utils.WriteHttpJsonError(w, http.StatusUnauthorized, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(userCreated); err != nil {
-		panic(err)
-	}
+	utils.WriteHttpJson(w, userLogin, http.StatusOK)
 }
