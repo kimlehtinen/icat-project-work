@@ -8,7 +8,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import DataUsageIcon from '@material-ui/icons/DataUsage';
 
 class SideMenu extends Component {
 
@@ -28,18 +31,24 @@ class SideMenu extends Component {
             <Fragment>
                 <Link to="/bloodpressure" className={classes.link}>
                     <ListItem button>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemIcon><DataUsageIcon /></ListItemIcon>
                         <ListItemText primary={'Bloodpressure data'} />
                     </ListItem>      
                 </Link>
-                <Link to="/temperature" className={classes.link}>
+                <Link to="/live-temperature" className={classes.link}>
                     <ListItem button>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
-                        <ListItemText primary={'Temperature data'} />
+                        <ListItemIcon><DataUsageIcon /></ListItemIcon>
+                        <ListItemText primary={'Live temperature data'} />
+                    </ListItem>      
+                </Link>
+                <Link to="/temperature-history" className={classes.link}>
+                    <ListItem button>
+                        <ListItemIcon><DataUsageIcon /></ListItemIcon>
+                        <ListItemText primary={'Temperature history'} />
                     </ListItem>      
                 </Link>
                 <ListItem button>
-                    <ListItemIcon><InboxIcon /></ListItemIcon>
+                    <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                     <ListItemText><Logout /></ListItemText>
                 </ListItem>
             </Fragment>
@@ -47,20 +56,16 @@ class SideMenu extends Component {
 
         const notLoggedInMenuItems = (
             <Fragment>
-                <ListItem button>
-                    <ListItemIcon><InboxIcon /></ListItemIcon>
-                    <ListItemText primary={'Guest Link'} />
-                </ListItem>
-                <Link to="/register" className={classes.link}>
-                    <ListItem button>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
-                        <ListItemText primary={'Register'} />
-                    </ListItem>
-                </Link>
                 <Link to="/login" className={classes.link}>
                     <ListItem button>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemIcon><AccountCircleIcon /></ListItemIcon>
                         <ListItemText primary={'Login'} />
+                    </ListItem>
+                </Link>
+                <Link to="/register" className={classes.link}>
+                    <ListItem button>
+                        <ListItemIcon><PersonAddIcon /></ListItemIcon>
+                        <ListItemText primary={'Register'} />
                     </ListItem>
                 </Link>
             </Fragment>

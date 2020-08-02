@@ -11,6 +11,8 @@ import {
   REGISTER_FAIL
 } from './types';
 
+import { API_VERSION } from '../config';
+
 /*
 The code in this file is used from
 Brad Traversy's "Learn The Mern Stack" Youtube tutorial.
@@ -18,7 +20,6 @@ Source code is taken from https://github.com/bradtraversy/mern_shopping_list/tre
 and is modified/built upon by Kim Lehtinen.
 */
 
-const API_VERSION = 1; // this till be added to all http requests /api/v${API_VERSION}/*
 
 /**
  * Whenever page is loaded, authInit loads user information

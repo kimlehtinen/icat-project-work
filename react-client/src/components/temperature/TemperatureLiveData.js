@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import MaterialTable from 'material-table'
+import React, { Component } from 'react';
 import { Line } from "react-chartjs-2";
 import 'chartjs-plugin-streaming';
 import Typography from '@material-ui/core/Typography';
@@ -29,9 +28,22 @@ class TemperatureLiveData extends Component {
         },
         options: {
           scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Temperature'
+              },
+              ticks: {
+                beginAtZero: true
+              }
+            }],
             xAxes: [
               {
-                type: "realtime"
+                type: "realtime",
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Time'
+                }
               }
             ]
           }
@@ -71,8 +83,6 @@ class TemperatureLiveData extends Component {
 
             let lineChart = this.reference.chartInstance
             lineChart.update();
-                
-            //this.setState({temperature})
           }
         }
 
@@ -88,8 +98,6 @@ class TemperatureLiveData extends Component {
     }
 
     render() {
-    
-      
       return (
         <div>
           <Typography variant="h4" noWrap>

@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { register } from '../../actions/authActions';
+import Typography from '@material-ui/core/Typography';
 
 class Register extends Component {
 
@@ -63,6 +64,14 @@ class Register extends Component {
 
         return (
             <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h4" noWrap>
+                            Register
+                        </Typography>
+                        <br/><br/>
+                    </Grid>
+                </Grid>
                 <Paper className={classes.paper}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>

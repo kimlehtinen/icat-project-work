@@ -16,6 +16,7 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/authActions';
 import { Redirect } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
 
 class Login extends Component {
 
@@ -63,11 +64,19 @@ class Login extends Component {
         const { classes } = this.props;
 
         if (this.props.isAuthenticated) {
-            return <Redirect to='/temperature'/>;
+            return <Redirect to='/live-temperature'/>;
         }
 
         return (
             <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h4" noWrap>
+                            Login
+                        </Typography>
+                        <br/><br/>
+                    </Grid>
+                </Grid>
                 <Paper className={classes.paper}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
