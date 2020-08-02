@@ -10,34 +10,33 @@ class ProtectedRoute extends Component {
      */
 
     static propTypes = {
-        auth: PropTypes.object.isRequired
-    }
-
-    isAuthenticated() {
-        const  { auth } = this.props;
-        return auth && auth.isAuthenticated;
+        isAuthenticated: PropTypes.bool
     }
 
     render() {
        const {component: Component, ...rest} = this.props;
 
-       return (
-           <Route {...rest} render={props => (
-               this.isAuthenticated() ? ( 
-                 <Component {...props}/>
-           ) : (
-            <Redirect to={{
-                pathname: '/login', 
-                state: {from: props.location }
-            }}/>
-           )
-         )}/>
-       );
+       if (this.props.isAuthenticated === false) {
+        return (
+            <Route {...rest} render={props => (
+                <Redirect to={{
+                    pathname: '/login', 
+                    state: {from: props.location }
+                }}/>
+             )}/>
+        )
+       }
+
+        return (
+            <Route {...rest} render={props => (
+                <Component {...props}/>
+            )}/>
+        );
     }
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps, null)(ProtectedRoute);

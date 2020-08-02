@@ -94,7 +94,7 @@ class TemperatureHistory extends Component {
             xAxes: [{
               type: 'time',
               time: {
-                  unit: 'minute'
+                  unit: 'hour'
               }
             }]
           }
@@ -143,7 +143,7 @@ class TemperatureHistory extends Component {
           </Typography>
           <br/><br/>
           <Typography variant="h6" noWrap>
-          {this.state.liveTemperature}
+          Today
           </Typography>
           <Line data={this.state.tempDataToday} options={this.state.optionsToday} ref = {(reference) => this.referenceToday = reference} />
         </div>

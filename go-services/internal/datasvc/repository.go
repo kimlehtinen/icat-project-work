@@ -61,7 +61,9 @@ func (r repository) AllBloodPressure() ([]models.BloodPressure, error) {
 func (r repository) AllTemperature() ([]models.Temperature, error) {
 	collection := r.db.Collection(dbcontext.Collections().Temperature)
 	results := []models.Temperature{}
-	cursor, err := collection.Find(context.TODO(), bson.M{})
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"createdat", -1}})
+	cursor, err := collection.Find(context.TODO(), bson.M{}, findOptions)
 
 	if err != nil {
 		panic(err)
@@ -88,7 +90,7 @@ func (r repository) LastInsertedTemperature() (models.Temperature, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	findOptions := options.FindOne()
 	findOptions.SetSort(bson.D{{"_id", -1}})
-	err := collection.FindOne(ctx, bson.D{}, *&findOptions).Decode(&temperatureDB)
+	err := collection.FindOne(ctx, bson.D{}, findOptions).Decode(&temperatureDB)
 
 	if err != nil {
 		fmt.Println("error retrieving current temperature")
