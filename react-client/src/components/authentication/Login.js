@@ -64,7 +64,7 @@ class Login extends Component {
         const { classes } = this.props;
 
         if (this.props.isAuthenticated) {
-            return <Redirect to='/live-temperature'/>;
+            return <Redirect to='/dashboard'/>;
         }
 
         return (

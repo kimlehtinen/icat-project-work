@@ -8,6 +8,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import HomeIcon from '@material-ui/icons/Home';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -29,6 +30,12 @@ class SideMenu extends Component {
         
         const loggedInMenuItems = (
             <Fragment>
+                <Link to="/dashboard" className={classes.link}>
+                    <ListItem button>
+                        <ListItemIcon><HomeIcon /></ListItemIcon>
+                        <ListItemText primary={'Dashboard'} />
+                    </ListItem>
+                </Link>
                 <Link to="/bloodpressure" className={classes.link}>
                     <ListItem button>
                         <ListItemIcon><DataUsageIcon /></ListItemIcon>
