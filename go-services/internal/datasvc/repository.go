@@ -38,7 +38,9 @@ func InitRepository(db *mongo.Database) Repository {
 func (r repository) AllBloodPressure() ([]models.BloodPressure, error) {
 	collection := r.db.Collection(dbcontext.Collections().BloodPressure)
 	results := []models.BloodPressure{}
-	cursor, err := collection.Find(context.TODO(), bson.M{})
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"createdat", -1}})
+	cursor, err := collection.Find(context.TODO(), bson.M{}, findOptions)
 
 	if err != nil {
 		panic(err)
