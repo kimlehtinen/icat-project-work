@@ -13,6 +13,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 class TemperatureHistory extends Component {
     _isMounted = false
@@ -406,20 +408,20 @@ class TemperatureHistory extends Component {
             >
               {this.state.tabIndex === this.TAB_DAY && (
                 <Box p={3}>
-                  <Grid container direction="row" justify="center" alignItems="flex-start" spacing={3}>
-                    <Grid item xs={4}>
-                      <Button variant="contained" color="primary" onClick={this.prevDay}>Prev</Button>
-                    </Grid>
-                    <Grid item xs={4}>
+                  <Grid container direction="row" justify="center" alignItems="center" spacing={3}> 
+                    <Grid item xs={12} className={classes.textCenter}>
                       {this.state.dayChart.currentDate
                       && 
-                      <Typography variant="h6" noWrap>
+                      <Typography variant="h4" noWrap>
+                      <Button variant="contained" onClick={this.prevDay}>
+                        <ArrowBackIosIcon />
+                      </Button>
                       Day: {moment(this.state.dayChart.currentDate).format('MMM DD YYYY')}
+                      <Button variant="contained" onClick={this.nextDay}>
+                        <ArrowForwardIosIcon />
+                      </Button>
                       </Typography>}
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Button variant="contained" color="primary" onClick={this.nextDay}>Next</Button>
-                    </Grid>
+                    </Grid> 
                   </Grid>
                   <Line data={this.state.tempDataToday} options={this.state.optionsToday} ref = {(reference) => this.referenceToday = reference} />
                 </Box>
@@ -434,19 +436,19 @@ class TemperatureHistory extends Component {
               {this.state.tabIndex === this.TAB_WEEK && (
                 <Box p={3}>
                   <Grid container direction="row" justify="center" alignItems="flex-start" spacing={3}>
-                    <Grid item xs={4}>
-                      <Button variant="contained" color="primary" onClick={this.prevWeek}>Prev</Button>
-                    </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={12} className={classes.textCenter}>
                       {(this.state.weekChart.currentWeek && this.state.weekChart.currentYear) 
                       && 
-                      <Typography variant="h6" noWrap>
+                      <Typography variant="h4" noWrap>
+                      <Button variant="contained" onClick={this.prevWeek}>
+                        <ArrowBackIosIcon />
+                      </Button>
                       Week {this.state.weekChart.currentWeek}
                       ({this.state.weekChart.currentYear})
+                      <Button variant="contained" onClick={this.nextWeek}>
+                        <ArrowForwardIosIcon />
+                      </Button>
                       </Typography>}
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Button variant="contained" color="primary" onClick={this.nextWeek}>Next</Button>
                     </Grid>
                   </Grid>
                   <Line data={this.state.tempDataThisWeek} options={this.state.optionsThisWeek} ref = {(reference) => this.referenceThisWeek = reference} />
@@ -462,19 +464,19 @@ class TemperatureHistory extends Component {
               {this.state.tabIndex === this.TAB_MONTH && (
               <Box p={3}>
                 <Grid container direction="row" justify="center" alignItems="flex-start" spacing={3}>
-                  <Grid item xs={4}>
-                    <Button variant="contained" color="primary" onClick={this.prevMonth}>Prev</Button>
-                  </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} className={classes.textCenter}>
                     {(this.state.monthChart.currentMonth && this.state.monthChart.currentYear) 
                     && 
-                    <Typography variant="h6" noWrap>
+                    <Typography variant="h4" noWrap>
+                    <Button variant="contained" onClick={this.prevMonth}>
+                      <ArrowBackIosIcon />
+                    </Button>
                     Month: {moment(this.state.monthChart.currentDate).format('MMM')}
                     {` (${this.state.monthChart.currentYear})`}
+                    <Button variant="contained" onClick={this.nextMonth}>
+                      <ArrowForwardIosIcon />
+                    </Button>
                     </Typography>}
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Button variant="contained" color="primary" onClick={this.nextMonth}>Next</Button>
                   </Grid>
                 </Grid>
                 <Line data={this.state.tempDataMonth} options={this.state.optionsMonth} ref = {(reference) => this.referenceMonth = reference} />
@@ -491,6 +493,9 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });
 

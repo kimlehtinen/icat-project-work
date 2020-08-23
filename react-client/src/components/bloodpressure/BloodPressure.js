@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import MaterialTable from 'material-table'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { withStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
 
 class BloodPressure extends Component {
     _isMounted = false
@@ -10,20 +13,6 @@ class BloodPressure extends Component {
         isLoading: true,
         columns: null,
         data: null
-    }
-
-    renderData() {
-        if (!(this.state.dataFromServer && this.state.dataFromServer.length)) {
-            return (
-                <div>No data</div>
-            )
-        }
-
-        return (
-            this.state.dataFromServer.map(function(object, i){
-             return <div key={i} >{i}: Diastolic {object.diastolic}, Pulse/Min {object.pulse_per_min}</div>;
-            })
-        )
     }
 
     componentDidMount() {
@@ -48,16 +37,14 @@ class BloodPressure extends Component {
             if (this._isMounted) {
                 this.setState({isLoading: false})
                 // listen to data sent from the websocket server
-                const message = JSON.parse(evt.data)
+                const bpData = JSON.parse(evt.data)
                 // this.setState({dataFromServer: message})
-                this.setState({data: message})
-                // console.log(message)
+                this.setState({data: bpData})
             }
         }
 
         this.ws.onclose = () => {
             console.log('disconnected')
-            // automatically try to reconnect on connection loss
         }
 
     }
@@ -67,6 +54,16 @@ class BloodPressure extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
+        if (this.state.isLoading) {
+            return (
+                <div className={classes.textCenter}>
+                    <CircularProgress />
+                </div>
+            );
+        }
+
         if (!this.state.columns || !this.state.data) {
             return (<div>No data</div>)
         }
@@ -81,5 +78,14 @@ class BloodPressure extends Component {
     }
 }
 
+const styles = theme => ({
+    textCenter: {
+      textAlign: 'center',
+    },
+});
 
-export default BloodPressure;
+const mapStateToProps = state => ({
+    //
+});
+
+export default connect(mapStateToProps, null)(withStyles(styles, { withTheme: true })(BloodPressure));
