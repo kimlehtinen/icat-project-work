@@ -10,7 +10,7 @@
     "chartjs-plugin-streaming": "^1.8.0",
     "create-react-class": "^15.6.3",
     "material-table": "^1.58.2",
-    "moment": "^2.10.2",
+    "moment": "^2.29.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
     "react-chartjs-2": "^2.9.0",
